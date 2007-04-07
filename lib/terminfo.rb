@@ -81,16 +81,18 @@ class TermInfo
     nil
   end
 
-  # returns terminal screen size in a two element array: [row, col].
-  def screensize
+  # returns terminal screen size in a two element array: [lines, columns].
+  def screen_size
     TermInfo.tiocgwinsz(@io)
   end
 
-  def screenwidth
-    TermInfo.tiocgwinsz(@io)[1]
+  # returns terminal screen height.
+  def screen_lines
+    TermInfo.tiocgwinsz(@io)[0]
   end
 
-  def screenheight
-    TermInfo.tiocgwinsz(@io)[0]
+  # returns terminal screen width.
+  def screen_columns
+    TermInfo.tiocgwinsz(@io)[1]
   end
 end
