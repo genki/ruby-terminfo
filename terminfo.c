@@ -92,6 +92,7 @@ rt_setupterm(VALUE self, VALUE v_term, VALUE v_fd)
   int fd;
   int err;
   int ret;
+  if (check_rt(self) != NULL) { rb_raise(eTermInfoError, "already initialized"); }
 
   if (v_term == Qnil)
     term = NULL;
