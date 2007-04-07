@@ -75,6 +75,16 @@ setup(VALUE self)
   old = set_curterm(term);
 }
 
+/*
+ * TermInfo#setupterm(term, fd) => int
+ *
+ * TermInfo#setupterm initializes TermInfo object.
+ *
+ * term is a string of nil.
+ * If nil is given, the environment variable $TERM is used.
+ *
+ * fd is a file descriptor for target terminal.
+ */
 static VALUE
 rt_setupterm(VALUE self, VALUE v_term, VALUE v_fd)
 {
@@ -102,6 +112,11 @@ rt_setupterm(VALUE self, VALUE v_term, VALUE v_fd)
   return INT2NUM(err);
 }
 
+/*
+ * TermInfo#tigetflag(capname) => int
+ *
+ * TermInfo#tigetflag returns a boolean capability specified by capname.
+ */
 static VALUE
 rt_tigetflag(VALUE self, VALUE v_capname)
 {
@@ -112,6 +127,11 @@ rt_tigetflag(VALUE self, VALUE v_capname)
   return RTEST(ret) ? Qtrue : Qfalse;
 }
 
+/*
+ * TermInfo#tigetnum(capname) => int
+ *
+ * TermInfo#tigetnum returns a numeric capability specified by capname.
+ */
 static VALUE
 rt_tigetnum(VALUE self, VALUE v_capname)
 {
@@ -123,6 +143,18 @@ rt_tigetnum(VALUE self, VALUE v_capname)
   return INT2NUM(ret);
 }
 
+/*
+ * TermInfo#tigetstr(capname) => str
+ *
+ * TermInfo#tigetstr returns a string capability specified by capname.
+ *
+ * The return value should be printed after tputs is applied.
+ * Also tparm should be applied if it has parameters.
+ *
+ *   io.print ti.tputs(ti.tparm(ti.tigetstr("cuf"), 2))
+ *
+ * Note that "cuf" means "cursor forward".
+ */
 static VALUE
 rt_tigetstr(VALUE self, VALUE v_capname)
 {
@@ -138,6 +170,11 @@ rt_tigetstr(VALUE self, VALUE v_capname)
   return rb_str_new2(ret);
 }
 
+/*
+ * TermInfo#tparm(str, ...) => str
+ *
+ * TermInfo#tparm expands parameters in str returned by tigetstr.
+ */
 static VALUE
 rt_tparm(int argc, VALUE *argv, VALUE self)
 {
@@ -179,6 +216,12 @@ putfunc(int arg)
   rb_str_cat(putfunc_output, &ch, 1);
 }
 
+/*
+ * TermInfo#tputs(str, affcnt) => str
+ *
+ * TermInfo#tputs expands padding informaiton using padding characters.
+ * affcnt is a number of lines affected by the str.
+ */
 static VALUE
 rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
 {
@@ -200,6 +243,12 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
   return output;
 }
 
+/*
+ * TermInfo.tiocgwinsz(io) => [row, col]
+ *
+ * TermInfo.tiocgwinsz returns the screen size of the terminal refered by io,
+ * using TIOCGWINSZ ioctl.
+ */
 static VALUE
 rt_tiocgwinsz(VALUE self, VALUE io)
 {
@@ -215,6 +264,14 @@ rt_tiocgwinsz(VALUE self, VALUE io)
   return rb_ary_new3(2, INT2NUM(sz.ws_row), INT2NUM(sz.ws_col));
 }
 
+/*
+ * TermInfo.tiocswinsz(io, row, col)
+ *
+ * TermInfo.tiocgwinsz update the screen size information of the terminal refered by io,
+ * using TIOCSWINSZ ioctl.
+ *
+ * It returns nil.
+ */
 static VALUE
 rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
 {

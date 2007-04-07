@@ -37,7 +37,7 @@ class TermInfo
   end
 
   def control_string(*args)
-    afflines = 0
+    afflines = 1
     raise ArgumentError, "capname requried" if args.empty?
     afflines = args.shift.to_i if args.first.respond_to?(:to_int)
     raise ArgumentError, "capname not given" if !args.first.respond_to?(:to_str)
@@ -67,5 +67,9 @@ class TermInfo
     end
     @io.flush if oldlevel == nil
     nil
+  end
+
+  def winsize
+    TermInfo.tiocgwinsz(@io)
   end
 end
