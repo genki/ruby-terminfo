@@ -32,4 +32,9 @@ require 'mkmf'
 
 have_library("ncurses", "setupterm")
 
+unless have_type("rb_io_t", ["ruby.h", "rubyio.h"])
+  have_struct_member("OpenFile", "fd", ["ruby.h", "rubyio.h"])
+end
+
+create_header
 create_makefile('terminfo')

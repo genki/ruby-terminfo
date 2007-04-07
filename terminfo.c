@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ruby.h"
 #include "rubyio.h"
+#include "extconf.h"
 
 #include <curses.h>
 #include <term.h>
@@ -39,6 +40,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static VALUE cTermInfo;
 static VALUE eTermInfoError;
+
+#ifndef HAVE_TYPE_RB_IO_T
+typedef OpenFile rb_io_t;
+#endif
 
 static void
 rt_free(void *ptr)
@@ -215,6 +220,7 @@ putfunc(int arg)
 {
   char ch = arg;
   rb_str_cat(putfunc_output, &ch, 1);
+  return arg;
 }
 
 /*
@@ -244,6 +250,12 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
   return output;
 }
 
+#if defined(HAVE_TYPE_RB_IO_T) ||  defined(HAVE_ST_FD)
+# define FILENO(fptr) (fptr->fd)
+#else
+# define FILENO(fptr) fileno(fptr->f)
+#endif
+
 /*
  * TermInfo.tiocgwinsz(io) => [row, col]
  *
@@ -253,13 +265,13 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
 static VALUE
 rt_tiocgwinsz(VALUE self, VALUE io)
 {
-  OpenFile *fptr;
+  rb_io_t *fptr;
   struct winsize sz;
   int ret;
 
   GetOpenFile(io, fptr);
 
-  ret = ioctl(fptr->fd, TIOCGWINSZ, &sz);
+  ret = ioctl(FILENO(fptr), TIOCGWINSZ, &sz);
   if (ret == -1) rb_raise(rb_eIOError, "TIOCGWINSZ failed");
 
   return rb_ary_new3(2, INT2NUM(sz.ws_row), INT2NUM(sz.ws_col));
@@ -276,7 +288,7 @@ rt_tiocgwinsz(VALUE self, VALUE io)
 static VALUE
 rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
 {
-  OpenFile *fptr;
+  rb_io_t *fptr;
   struct winsize sz;
   int ret;
 
@@ -285,7 +297,7 @@ rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
   sz.ws_row = NUM2INT(row);
   sz.ws_col = NUM2INT(col);
 
-  ret = ioctl(fptr->fd, TIOCSWINSZ, &sz);
+  ret = ioctl(FILENO(fptr), TIOCSWINSZ, &sz);
   if (ret == -1) rb_raise(rb_eIOError, "TIOCSWINSZ failed");
 
   return Qnil;
