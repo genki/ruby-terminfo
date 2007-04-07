@@ -36,6 +36,15 @@ class TermInfo
     @io = io
   end
 
+  # TermInfo#control_string return a string to control terminal.
+  #
+  #   TermInfo#control_string([afflines,] capname, p1, p2, ...)
+  #
+  # capname is a terminfo string capability such as "cuu", "el".
+  #
+  # p1, p2, ... are parameters for the capability.
+  #
+  # afflines is a number of lines affected. (used for determining padding length)
   def control_string(*args)
     afflines = 1
     raise ArgumentError, "capname requried" if args.empty?
@@ -45,6 +54,9 @@ class TermInfo
     self.tputs(self.tparm(self.tigetstr(capname), *args), afflines)
   end
 
+  # TermInfo#control controls a terminal. 
+  #
+  # It prints the result of control_string to io specified at initialization.
   def control(*args)
     @io.write(self.control_string(*args))
     nil
@@ -69,6 +81,7 @@ class TermInfo
     nil
   end
 
+  # returns terminal screen size in a two element array: [row, col].
   def winsize
     TermInfo.tiocgwinsz(@io)
   end
