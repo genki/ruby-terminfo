@@ -36,13 +36,17 @@ class TermInfo
     @io = io
   end
 
-  def control(*args)
+  def control_string(*args)
     afflines = 0
     raise ArgumentError, "capname requried" if args.empty?
     afflines = args.shift.to_i if args.first.respond_to?(:to_int)
     raise ArgumentError, "capname not given" if !args.first.respond_to?(:to_str)
     capname = args.shift.to_str 
-    @io.write(self.tputs(self.tparm(self.tigetstr(capname), *args), afflines))
+    self.tputs(self.tparm(self.tigetstr(capname), *args), afflines)
+  end
+
+  def control(*args)
+    @io.write(self.control_string(*args))
     nil
   end
 
