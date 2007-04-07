@@ -76,7 +76,7 @@ static VALUE
 rt_setupterm(VALUE self, VALUE v_term, VALUE v_io)
 {
   char *term;
-  int filedes;
+  int fd;
   int err;
   int ret;
 
@@ -84,9 +84,9 @@ rt_setupterm(VALUE self, VALUE v_term, VALUE v_io)
     term = NULL;
   else
     term = StringValueCStr(v_term);
-  filedes = NUM2INT(v_io);
+  fd = NUM2INT(v_io);
 
-  ret = setupterm(term, filedes, &err);
+  ret = setupterm(term, fd, &err);
   if (ret == ERR) {
     if (err == 1) rb_raise(eTermInfoError, "hardcopy terminal");
     else if (err == 0) rb_raise(eTermInfoError, "terminal could not be found");
