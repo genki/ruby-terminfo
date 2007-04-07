@@ -82,7 +82,7 @@ class TermInfo
   end
 
   # returns terminal screen size in a two element array: [row, col].
-  def winsize
+  def screensize
     TermInfo.tiocgwinsz(@io)
   end
 end
