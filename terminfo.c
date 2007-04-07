@@ -30,9 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ruby.h"
+#include "rubyio.h"
 
 #include <curses.h>
 #include <term.h>
+#include <termios.h>
+#include <sys/ioctl.h>
 
 static VALUE cTermInfo;
 static VALUE eTermInfoError;
@@ -73,7 +76,7 @@ setup(VALUE self)
 }
 
 static VALUE
-rt_setupterm(VALUE self, VALUE v_term, VALUE v_io)
+rt_setupterm(VALUE self, VALUE v_term, VALUE v_fd)
 {
   char *term;
   int fd;
@@ -84,7 +87,7 @@ rt_setupterm(VALUE self, VALUE v_term, VALUE v_io)
     term = NULL;
   else
     term = StringValueCStr(v_term);
-  fd = NUM2INT(v_io);
+  fd = NUM2INT(v_fd);
 
   ret = setupterm(term, fd, &err);
   if (ret == ERR) {
@@ -197,6 +200,39 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
   return output;
 }
 
+static VALUE
+rt_tiocgwinsz(VALUE self, VALUE io)
+{
+  OpenFile *fptr;
+  struct winsize sz;
+  int ret;
+
+  GetOpenFile(io, fptr);
+
+  ret = ioctl(fptr->fd, TIOCGWINSZ, &sz);
+  if (ret == -1) rb_raise(rb_eIOError, "TIOCGWINSZ failed");
+
+  return rb_ary_new3(2, INT2NUM(sz.ws_row), INT2NUM(sz.ws_col));
+}
+
+static VALUE
+rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
+{
+  OpenFile *fptr;
+  struct winsize sz;
+  int ret;
+
+  GetOpenFile(io, fptr);
+
+  sz.ws_row = NUM2INT(row);
+  sz.ws_col = NUM2INT(col);
+
+  ret = ioctl(fptr->fd, TIOCSWINSZ, &sz);
+  if (ret == -1) rb_raise(rb_eIOError, "TIOCSWINSZ failed");
+
+  return Qnil;
+}
+
 void
 Init_terminfo()
 {
@@ -214,4 +250,7 @@ Init_terminfo()
   rb_define_method(cTermInfo, "tigetstr", rt_tigetstr, 1);
   rb_define_method(cTermInfo, "tparm", rt_tparm, -1);
   rb_define_method(cTermInfo, "tputs", rt_tputs, 2);
+
+  rb_define_module_function(cTermInfo, "tiocgwinsz", rt_tiocgwinsz, 1);
+  rb_define_module_function(cTermInfo, "tiocswinsz", rt_tiocswinsz, 3);
 }
