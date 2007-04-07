@@ -67,6 +67,8 @@ setup(VALUE self)
   TERMINAL *old;
   TERMINAL *term = check_rt(self);
   if (term == NULL) { rb_raise(eTermInfoError, "not initialized"); }
+  if (cur_term == term)
+    return;
   old = set_curterm(term);
 }
 
