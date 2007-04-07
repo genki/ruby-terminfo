@@ -85,4 +85,12 @@ class TermInfo
   def screensize
     TermInfo.tiocgwinsz(@io)
   end
+
+  def screenwidth
+    TermInfo.tiocgwinsz(@io)[1]
+  end
+
+  def screenheight
+    TermInfo.tiocgwinsz(@io)[0]
+  end
 end
