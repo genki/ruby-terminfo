@@ -90,9 +90,11 @@ class TermInfo
   def screen_lines
     TermInfo.tiocgwinsz(@io)[0]
   end
+  alias screen_height screen_lines
 
   # returns terminal screen width.
   def screen_columns
     TermInfo.tiocgwinsz(@io)[1]
   end
+  alias screen_width screen_columns
 end
