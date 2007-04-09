@@ -74,7 +74,7 @@ setup(VALUE self)
 {
   TERMINAL *old;
   TERMINAL *term = check_rt(self);
-  if (term == NULL) { rb_raise(eTermInfoError, "not initialized"); }
+  if (term == NULL) { rb_raise(eTermInfoError, "terminfo object not initialized"); }
   if (cur_term == term)
     return;
   old = set_curterm(term);
@@ -97,7 +97,7 @@ rt_setupterm(VALUE self, VALUE v_term, VALUE v_fd)
   int fd;
   int err;
   int ret;
-  if (check_rt(self) != NULL) { rb_raise(eTermInfoError, "already initialized"); }
+  if (check_rt(self) != NULL) { rb_raise(eTermInfoError, "terminfo object already initialized"); }
 
   if (v_term == Qnil)
     term = NULL;
