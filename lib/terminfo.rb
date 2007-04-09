@@ -31,9 +31,14 @@
 require 'terminfo.so'
 
 class TermInfo
-  def initialize(term=nil, io=STDERR)
+  def initialize(term=ENV['TERM'], io=STDERR)
     setupterm(term, io.fileno)
+    @term = term
     @io = io
+  end
+
+  def inspect
+    "\#<#{self.class}:#{@term}>"
   end
 
   # TermInfo#control_string return a string to control terminal.
