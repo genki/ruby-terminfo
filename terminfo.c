@@ -265,6 +265,7 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
 static VALUE
 rt_tiocgwinsz(VALUE self, VALUE io)
 {
+#ifdef TIOCGWINSZ
   rb_io_t *fptr;
   struct winsize sz;
   int ret;
@@ -275,6 +276,9 @@ rt_tiocgwinsz(VALUE self, VALUE io)
   if (ret == -1) rb_raise(rb_eIOError, "TIOCGWINSZ failed");
 
   return rb_ary_new3(2, INT2NUM(sz.ws_row), INT2NUM(sz.ws_col));
+#else
+  rb_notimplement();
+#endif
 }
 
 /*
@@ -288,6 +292,7 @@ rt_tiocgwinsz(VALUE self, VALUE io)
 static VALUE
 rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
 {
+#ifdef TIOCSWINSZ
   rb_io_t *fptr;
   struct winsize sz;
   int ret;
@@ -301,6 +306,9 @@ rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
   if (ret == -1) rb_raise(rb_eIOError, "TIOCSWINSZ failed");
 
   return Qnil;
+#else
+  rb_notimplement();
+#endif
 }
 
 void
