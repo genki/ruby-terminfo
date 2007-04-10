@@ -30,7 +30,12 @@
 
 require 'mkmf'
 
-have_library("ncurses", "setupterm")
+# GNU/Linux     -lncurses
+# FreeBSD       -lncurses
+# HP-UX         -lcurses
+
+have_library("ncurses", "setupterm") or
+have_library("curses", "setupterm") 
 
 unless have_type("rb_io_t", ["ruby.h", "rubyio.h"])
   have_struct_member("OpenFile", "fd", ["ruby.h", "rubyio.h"])
