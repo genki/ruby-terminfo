@@ -47,12 +47,14 @@ class TermInfo
   def TermInfo.screen_height() default_object.screen_height() end
   def TermInfo.screen_columns() default_object.screen_columns() end
   def TermInfo.screen_width() default_object.screen_width() end
+  def TermInfo.io() default_object.io() end
 
   def initialize(term=ENV['TERM'], io=STDERR)
     setupterm(term, io.fileno)
     @term = term
     @io = io
   end
+  attr_reader :io
 
   def inspect
     "\#<#{self.class}:#{@term}>"
