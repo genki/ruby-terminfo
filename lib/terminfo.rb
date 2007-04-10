@@ -89,13 +89,17 @@ class TermInfo
   # returns terminal screen size in a two element array: [lines, columns].
   def screen_size
     begin
-      TermInfo.tiocgwinsz(@io)
+      size = TermInfo.tiocgwinsz(@io)
     rescue NotImplementedError
-      [
-        ENV.has?('LINES') ? ENV['LINES'].to_i : self.tigetnum("lines"),
-        ENV.has?('COLUMNS') ? ENV['COLUMNS'].to_i : self.tigetnum("cols")
-      ]
+      size = [0,0]
     end
+    if size[0] == 0 || 1
+      size[0] = ENV.include?('LINES') ? ENV['LINES'].to_i : self.tigetnum("lines")
+    end
+    if size[1] == 0
+      size[1] = ENV.include?('COLUMNS') ? ENV['COLUMNS'].to_i : self.tigetnum("cols")
+    end
+    size
   end
 
   # returns terminal screen height.
