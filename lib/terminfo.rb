@@ -31,6 +31,23 @@
 require 'terminfo.so'
 
 class TermInfo
+  def TermInfo.default_object
+    unless defined? @default_terminfo
+      @default_terminfo = TermInfo.new(ENV['TERM'], open("/dev/tty", "r+"))
+    end
+    @default_terminfo
+  end
+
+  def TermInfo.control_string(*args) default_object.control_string(*args) end
+  def TermInfo.control(*args) default_object.control(*args) end
+  def TermInfo.write(str) default_object.write(str) end
+  def TermInfo.flush(&block) default_object.flush(&block) end
+  def TermInfo.screen_size() default_object.screen_size() end
+  def TermInfo.screen_lines() default_object.screen_lines() end
+  def TermInfo.screen_height() default_object.screen_height() end
+  def TermInfo.screen_columns() default_object.screen_columns() end
+  def TermInfo.screen_width() default_object.screen_width() end
+
   def initialize(term=ENV['TERM'], io=STDERR)
     setupterm(term, io.fileno)
     @term = term
