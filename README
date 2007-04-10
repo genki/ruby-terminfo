@@ -1,5 +1,7 @@
 = ruby-terminfo - terminfo binding for Ruby
 
+ruby-terminfo is a terminfo binding for Ruby
+
 == Author
 
 Tanaka Akira <akr@fsij.org>
