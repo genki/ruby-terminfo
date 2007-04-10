@@ -96,11 +96,14 @@ class TermInfo
     oldlevel = nil
     if block_given?
       oldlevel = Thread.current[:TermInfo_Flush_level]
+      oldsync = @io.sync
       begin
         Thread.current[:TermInfo_Flush_level] = (oldlevel || 0) + 1
+        @io.sync = false
         yield
       ensure
         Thread.current[:TermInfo_Flush_level] = oldlevel
+        @io.sync = oldsync
       end
     end
     @io.flush if oldlevel == nil
