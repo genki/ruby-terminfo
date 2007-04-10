@@ -93,7 +93,7 @@ class TermInfo
     rescue NotImplementedError
       size = [0,0]
     end
-    if size[0] == 0 || 1
+    if size[0] == 0
       size[0] = ENV.include?('LINES') ? ENV['LINES'].to_i : self.tigetnum("lines")
     end
     if size[1] == 0
