@@ -43,3 +43,11 @@ end
 
 create_header
 create_makefile('terminfo')
+
+open("Makefile", "a") {|mfile|
+  mfile.puts <<'End'
+rdoc:
+	rdoc --op rdoc terminfo.c lib/terminfo.rb
+End
+}
+
