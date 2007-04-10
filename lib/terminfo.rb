@@ -33,7 +33,9 @@ require 'terminfo.so'
 class TermInfo
   def TermInfo.default_object
     unless defined? @default_terminfo
-      @default_terminfo = TermInfo.new(ENV['TERM'], open("/dev/tty", "r+"))
+      io = open("/dev/tty", "r+")
+      io.sync = true
+      @default_terminfo = TermInfo.new(ENV['TERM'], io)
     end
     @default_terminfo
   end
