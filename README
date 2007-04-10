@@ -14,7 +14,7 @@ http://www.a-k-r.org/ruby-terminfo/
 * low-level terminfo binding (setupterm, tigetflag, tigetnum, tigetstr, tparm, tputs)
 * TIOCGWINSZ/TIOCSWINSZ ioctl for screen size 
 
-== Example
+== Usage
 
 === easy to use methods
 
@@ -35,7 +35,7 @@ http://www.a-k-r.org/ruby-terminfo/
 
 == Download
 
-* latest release: ruby-terminfo-0.1.tar.gz
+* latest release: http://www.a-k-r.org/ruby-terminfo/ruby-terminfo-0.1.tar.gz
 
 * development version in Subversion repository:
 
