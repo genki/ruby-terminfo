@@ -34,20 +34,24 @@ require 'mkmf'
 # FreeBSD       -lncurses
 # HP-UX         -lcurses
 
+has_setupterm =
 have_library("ncurses", "setupterm") or
 have_library("curses", "setupterm") 
 
-unless have_type("rb_io_t", ["ruby.h", "rubyio.h"])
-  have_struct_member("OpenFile", "fd", ["ruby.h", "rubyio.h"])
-end
+if has_setupterm
+  unless have_type("rb_io_t", ["ruby.h", "rubyio.h"])
+    have_struct_member("OpenFile", "fd", ["ruby.h", "rubyio.h"])
+  end
 
-create_header
-create_makefile('terminfo')
+  create_header
+  create_makefile('terminfo')
 
-open("Makefile", "a") {|mfile|
-  mfile.puts <<'End'
+  open("Makefile", "a") {|mfile|
+    mfile.puts <<'End'
 rdoc:
 	rdoc --op rdoc terminfo.c lib/terminfo.rb
 End
-}
-
+  }
+else
+  puts "terminfo library not found"
+end
