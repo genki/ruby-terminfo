@@ -35,8 +35,8 @@ require 'mkmf'
 # HP-UX         -lcurses
 
 has_setupterm =
-have_library("ncurses", "setupterm") or
-have_library("curses", "setupterm") 
+  have_library("ncurses", "setupterm") ||
+  have_library("curses", "setupterm") 
 
 if has_setupterm
   unless have_type("rb_io_t", ["ruby.h", "rubyio.h"])
