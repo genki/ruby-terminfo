@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <termios.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 
 static VALUE cTermInfo;
 static VALUE eTermInfoError;
