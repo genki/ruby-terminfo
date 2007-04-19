@@ -30,9 +30,13 @@
 
 require 'mkmf'
 
-# GNU/Linux     curses.h, term.h, -lncurses
-# FreeBSD       -lncurses
-# HP-UX         -lcurses
+# Debian GNU/Linux 4.0 (etch)   curses.h, term.h, -lncurses     (ncurses.h is linked to curses.h)
+# FreeBSD 6.2                   curses.h, term.h, -lncurses     (ncurses.h is linked to curses.h)
+# OpenBSD 4.0                   curses.h, term.h, -lncurses     (curses.h includes ncurses.h by default)
+# HP-UX 11i v3                  term.h, -lcurses
+# SunOS 5.10                    curses.h, term.h, -lcurses
+
+# NetBSD 3.1 with ncurses       ncurses.h, -lncurses    (curses.h is incompatible for ncurses)
 
 have_header("curses.h")
 have_header("term.h")
