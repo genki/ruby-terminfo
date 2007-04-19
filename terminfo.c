@@ -33,8 +33,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "rubyio.h"
 #include "extconf.h"
 
+#if defined(HAVE_NCURSES_H)
+#include <ncurses.h>
+#elif defined(HAVE_CURSES_H)
 #include <curses.h>
+#endif
+
+#ifdef HAVE_TERM_H
 #include <term.h>
+#endif
+
 #include <termios.h>
 #include <sys/ioctl.h>
 

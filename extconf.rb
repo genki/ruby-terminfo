@@ -30,13 +30,20 @@
 
 require 'mkmf'
 
-# GNU/Linux     -lncurses
+# GNU/Linux     curses.h, term.h, -lncurses
 # FreeBSD       -lncurses
 # HP-UX         -lcurses
 
-has_setupterm =
-  have_library("ncurses", "setupterm") ||
-  have_library("curses", "setupterm") 
+have_header("curses.h")
+have_header("term.h")
+
+has_setupterm = true
+if have_library("ncurses", "setupterm")
+  have_header("ncurses.h")
+elsif have_library("curses", "setupterm") 
+else
+  has_setupterm = false
+end
 
 if has_setupterm
   unless have_type("rb_io_t", ["ruby.h", "rubyio.h"])
