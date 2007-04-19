@@ -1,6 +1,6 @@
 2007-04-19  Tanaka Akira  <akr@fsij.org>
 
-	* extconf.rb, terminfo.c: try ncurses.h if ncurses is used.
+	* extconf.rb, terminfo.c: try ncurses.h when ncurses is used.
 	  NetBSD has curses.h which is incompatible with ncurses.
 
 	* terminfo.c: define del_curterm empty on FreeBSD and OpenBSD to
