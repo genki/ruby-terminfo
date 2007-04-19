@@ -53,6 +53,12 @@ static VALUE eTermInfoError;
 typedef OpenFile rb_io_t;
 #endif
 
+#if defined(__OpenBSD__)
+/* avoid core dump: 
+  http://cvs.openbsd.org/cgi-bin/query-pr-wrapper?full=yes&textonly=yes&numbers=5447 */
+#define del_curterm(oterm) do {} while(0)
+#endif
+
 static void
 rt_free(void *ptr)
 {
