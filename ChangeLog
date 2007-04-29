@@ -1,3 +1,8 @@
+2007-04-29  Tanaka Akira  <akr@fsij.org>
+
+	* lib/terminfo.rb (TermInfo.default_object): Use File::NOCTTY for
+	  opening /dev/tty to avoid acquire a controlling terminal.
+
 2007-04-19  Tanaka Akira  <akr@fsij.org>
 
 	* extconf.rb, terminfo.c: try ncurses.h when ncurses is used.
