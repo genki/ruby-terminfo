@@ -1,3 +1,7 @@
+2007-05-29  Tanaka Akira  <akr@fsij.org>
+
+	* sample/resize: new sample program.
+
 2007-04-29  Tanaka Akira  <akr@fsij.org>
 
 	* lib/terminfo.rb (TermInfo.default_object): Use File::NOCTTY for
