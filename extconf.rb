@@ -41,6 +41,8 @@ require 'mkmf'
 have_header("curses.h")
 have_header("term.h")
 
+have_func("ctermid", "stdio.h")
+
 has_setupterm = true
 if have_library("ncurses", "setupterm")
   have_header("ncurses.h")

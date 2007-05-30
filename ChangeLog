@@ -1,3 +1,10 @@
+2007-05-30  Tanaka Akira  <akr@fsij.org>
+
+	* terminfo.c (TermInfo.ctermid): defined.
+
+	* lib/terminfo.rb, sample/resize: use TermInfo.ctermid instead of
+	  "/dev/tty".
+
 2007-05-29  Tanaka Akira  <akr@fsij.org>
 
 	* sample/resize: new sample program.

@@ -331,6 +331,23 @@ rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
 #endif
 }
 
+/*
+ * TermInfo.ctermid
+ *
+ * TermInfo.ctermid returns a pathname for the current controling terminal,
+ * such as "/dev/tty".
+ */
+static VALUE
+rt_ctermid(VALUE self)
+{
+#ifdef HAVE_CTERMID
+  char buf[L_ctermid];
+  return rb_str_new2(ctermid(buf));
+#else
+  return rb_str_new2("/dev/tty");
+#endif
+}
+
 void
 Init_terminfo()
 {
@@ -351,4 +368,6 @@ Init_terminfo()
 
   rb_define_module_function(cTermInfo, "tiocgwinsz", rt_tiocgwinsz, 1);
   rb_define_module_function(cTermInfo, "tiocswinsz", rt_tiocswinsz, 3);
+
+  rb_define_module_function(cTermInfo, "ctermid", rt_ctermid, 0);
 }

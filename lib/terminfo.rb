@@ -33,7 +33,7 @@ require 'terminfo.so'
 class TermInfo
   def TermInfo.default_object
     unless defined? @default_terminfo
-      io = File.open("/dev/tty", File::RDWR|File::NOCTTY)
+      io = File.open(TermInfo.ctermid, File::RDWR|File::NOCTTY)
       io.sync = true
       @default_terminfo = TermInfo.new(ENV['TERM'], io)
     end

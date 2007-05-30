@@ -29,7 +29,7 @@ def noecho_raw(io)
   }
 end
 
-tty = File.open("/dev/tty", "r+")
+tty = File.open(TermInfo.ctermid, "r+")
 tty.sync = true
 
 str = nil
