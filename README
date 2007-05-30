@@ -28,7 +28,7 @@ http://www.a-k-r.org/ruby-terminfo/
 === low level methods
 
   require 'terminfo'
-  t = TermInfo.new(ENV["TERM"], STDOUT)
+  t = TermInfo.new(ENV["TERM"], File.open(TermInfo.ctermid, "r+"))
   print t.tputs(t.tparm(t.tigetstr("cuf"), 7), 1)  # cursor forward 7 columns
   p TermInfo.tiocgwinsz(STDOUT)                    # use TIOCGWINSZ
 
