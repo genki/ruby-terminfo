@@ -15,6 +15,7 @@ http://www.a-k-r.org/ruby-terminfo/
 * easy to use method, control, for combination of tigetstr/tparm/tputs.
 * low-level terminfo binding (setupterm, tigetflag, tigetnum, tigetstr, tparm, tputs)
 * TIOCGWINSZ/TIOCSWINSZ ioctl for screen size 
+* ctermid to avoid hardcoding /dev/tty.
 
 == Usage
 
