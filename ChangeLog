@@ -1,5 +1,9 @@
 2008-12-30  Tanaka Akira  <akr@fsij.org>
 
+	* terminfo.c (rt_wcswidth): check the return value of wcwidth.
+
+2008-12-30  Tanaka Akira  <akr@fsij.org>
+
 	* terminfo.c: prefer ruby/io.h over rubyio.h.
 	  include wchar.h.
 	  (FILENO): condition refined.

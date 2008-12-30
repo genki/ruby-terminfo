@@ -370,6 +370,7 @@ rt_wcswidth(VALUE self, VALUE str)
   mbstate_t mbs;
   wchar_t wc;
   long cols;
+  int width;
 
 #ifdef HAVE_RUBY_ENCODING_H
   /* The encoding of str is assumed to be the locale encoding on Ruby 1.8. */
@@ -387,7 +388,10 @@ rt_wcswidth(VALUE self, VALUE str)
     if (r == 0)
       rb_raise(rb_eArgError, "NUL found");
 
-    cols += wcwidth(wc);
+    width = wcwidth(wc);
+    if (width == -1)
+      rb_raise(rb_eArgError, "non-printable charactor found");
+    cols += width;
 
     l -= r;
     s += r;
