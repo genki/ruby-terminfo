@@ -51,11 +51,21 @@ else
   has_setupterm = false
 end
 
-if has_setupterm
-  unless have_type("rb_io_t", ["ruby.h", "rubyio.h"])
-    have_struct_member("OpenFile", "fd", ["ruby.h", "rubyio.h"])
-  end
+have_header("wchar.h")
 
+rubyio_h = nil
+rubyio_h = "ruby/io.h" if have_header("ruby/io.h")
+rubyio_h = "rubyio.h" unless rubyio_h
+
+if have_type("rb_io_t", ["ruby.h", rubyio_h])
+  have_struct_member("rb_io_t", "fd", ["ruby.h", rubyio_h])
+else
+  have_struct_member("OpenFile", "fd", ["ruby.h", rubyio_h])
+end
+
+have_header("ruby/encoding.h")
+
+if has_setupterm
   create_header
   create_makefile('terminfo')
 

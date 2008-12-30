@@ -1,3 +1,12 @@
+2008-12-30  Tanaka Akira  <akr@fsij.org>
+
+	* terminfo.c: prefer ruby/io.h over rubyio.h.
+	  include wchar.h.
+	  (FILENO): condition refined.
+	  (rt_wcswidth): new method TermInfo.wcswidth.
+
+	* extconf.rb: check ruby/io.h and ruby/encoding.h.
+	  
 2007-05-30  Tanaka Akira  <akr@fsij.org>
 
 	* terminfo.c (TermInfo.ctermid): defined.
