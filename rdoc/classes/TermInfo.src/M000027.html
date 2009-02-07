@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>tparm (TermInfo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * TermInfo#tparm(str, ...) =&gt; str
+ *
+ * TermInfo#tparm expands parameters in str returned by tigetstr.
+ */
+static VALUE
+rt_tparm(int argc, VALUE *argv, VALUE self)
+{
+  char *capname, *ret;
+  setup(self);
+  VALUE v_capname, v1, v2, v3, v4, v5, v6, v7, v8, v9;
+  long p1, p2, p3, p4, p5, p6, p7, p8, p9;
+  setup(self);
+
+  if (rb_scan_args(argc, argv, &quot;19&quot;, &amp;v_capname, &amp;v1, &amp;v2, &amp;v3, &amp;v4, &amp;v5, &amp;v6, &amp;v7, &amp;v8, &amp;v9) == 0) {
+    rb_raise(rb_eArgError, &quot;capname required&quot;);
+  }
+
+  capname = StringValueCStr(v_capname);
+#define conv(p, v) do { if (v == Qnil) p = 0; else p = NUM2LONG(v); } while(0)
+  conv(p1, v1);
+  conv(p2, v2);
+  conv(p3, v3);
+  conv(p4, v4);
+  conv(p5, v5);
+  conv(p6, v6);
+  conv(p7, v7);
+  conv(p8, v8);
+  conv(p9, v9);
+
+  ret = tparm(capname, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+
+  if (ret == NULL) { rb_raise(eTermInfoError, &quot;tparm failed&quot;); }
+
+  return rb_str_new2(ret);
+}</pre>
+</body>
+</html>

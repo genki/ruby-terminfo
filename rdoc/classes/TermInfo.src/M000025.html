@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>tigetnum (TermInfo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * TermInfo#tigetnum(capname) =&gt; int
+ *
+ * TermInfo#tigetnum returns a numeric capability specified by capname.
+ */
+static VALUE
+rt_tigetnum(VALUE self, VALUE v_capname)
+{
+  int ret;
+  setup(self);
+  ret = tigetnum(StringValueCStr(v_capname));
+  if (ret == -2) { rb_raise(eTermInfoError, &quot;not a numeric capability&quot;); }
+  if (ret == -1) { rb_raise(eTermInfoError, &quot;canceled or absent numeric capability&quot;); }
+  return INT2NUM(ret);
+}</pre>
+</body>
+</html>

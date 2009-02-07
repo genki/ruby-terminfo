@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>tputs (TermInfo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * TermInfo#tputs(str, affcnt) =&gt; str
+ *
+ * TermInfo#tputs expands padding informaiton using padding characters.
+ * affcnt is a number of lines affected by the str.
+ */
+static VALUE
+rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
+{
+  int ret;
+  char *str;
+  int affcnt;
+  VALUE output;
+
+  setup(self);
+  str = StringValueCStr(v_str);
+  affcnt = NUM2INT(v_affcnt);
+
+  putfunc_output = output = rb_str_new2(&quot;&quot;);
+  ret = tputs(str, affcnt, putfunc);
+  putfunc_output = Qnil;
+
+  if (ret == ERR) { rb_raise(eTermInfoError, &quot;tputs failed&quot;); }
+
+  return output;
+}</pre>
+</body>
+</html>

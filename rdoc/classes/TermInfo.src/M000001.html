@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>default_object (TermInfo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/terminfo.rb, line 34</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-constant">TermInfo</span>.<span class="ruby-identifier">default_object</span>
+    <span class="ruby-keyword kw">unless</span> <span class="ruby-keyword kw">defined?</span> <span class="ruby-ivar">@default_terminfo</span>
+      <span class="ruby-identifier">io</span> = <span class="ruby-identifier">open</span>(<span class="ruby-value str">&quot;/dev/tty&quot;</span>, <span class="ruby-value str">&quot;r+&quot;</span>)
+      <span class="ruby-identifier">io</span>.<span class="ruby-identifier">sync</span> = <span class="ruby-keyword kw">true</span>
+      <span class="ruby-ivar">@default_terminfo</span> = <span class="ruby-constant">TermInfo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">ENV</span>[<span class="ruby-value str">'TERM'</span>], <span class="ruby-identifier">io</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@default_terminfo</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>tiocswinsz (TermInfo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * TermInfo.tiocswinsz(io, row, col)
+ *
+ * TermInfo.tiocgwinsz update the screen size information of the terminal refered by io,
+ * using TIOCSWINSZ ioctl.
+ *
+ * It returns nil.
+ */
+static VALUE
+rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
+{
+#ifdef TIOCSWINSZ
+  rb_io_t *fptr;
+  struct winsize sz;
+  int ret;
+
+  GetOpenFile(io, fptr);
+
+  sz.ws_row = NUM2INT(row);
+  sz.ws_col = NUM2INT(col);
+
+  ret = ioctl(FILENO(fptr), TIOCSWINSZ, &amp;sz);
+  if (ret == -1) rb_raise(rb_eIOError, &quot;TIOCSWINSZ failed&quot;);
+
+  return Qnil;
+#else
+  rb_notimplement();
+#endif
+}</pre>
+</body>
+</html>

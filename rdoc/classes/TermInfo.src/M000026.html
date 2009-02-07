@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>tigetstr (TermInfo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * TermInfo#tigetstr(capname) =&gt; str
+ *
+ * TermInfo#tigetstr returns a string capability specified by capname.
+ *
+ * The return value should be printed after tputs is applied.
+ * Also tparm should be applied if it has parameters.
+ *
+ *   io.print ti.tputs(ti.tparm(ti.tigetstr(&quot;cuf&quot;), 2))
+ *
+ * Note that &quot;cuf&quot; means &quot;cursor forward&quot;.
+ */
+static VALUE
+rt_tigetstr(VALUE self, VALUE v_capname)
+{
+  char *ret;
+  setup(self);
+  ret = tigetstr(StringValueCStr(v_capname));
+  if (ret == (char*)-1) {
+    rb_raise(eTermInfoError, &quot;not a string capability&quot;);
+  }
+  if (ret == 0) {
+    rb_raise(eTermInfoError, &quot;canceled or absent string capability&quot;);
+  }
+  return rb_str_new2(ret);
+}</pre>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>setupterm (TermInfo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>/*
+ * TermInfo#setupterm(term, fd) =&gt; int
+ *
+ * TermInfo#setupterm initializes TermInfo object.
+ *
+ * term is a string of nil.
+ * If nil is given, the environment variable $TERM is used.
+ *
+ * fd is a file descriptor for target terminal.
+ */
+static VALUE
+rt_setupterm(VALUE self, VALUE v_term, VALUE v_fd)
+{
+  char *term;
+  int fd;
+  int err;
+  int ret;
+  if (check_rt(self) != NULL) { rb_raise(eTermInfoError, &quot;terminfo object already initialized&quot;); }
+
+  if (v_term == Qnil)
+    term = NULL;
+  else
+    term = StringValueCStr(v_term);
+  fd = NUM2INT(v_fd);
+
+  ret = setupterm(term, fd, &amp;err);
+  if (ret == ERR) {
+    if (err == 1) rb_raise(eTermInfoError, &quot;hardcopy terminal&quot;);
+    else if (err == 0) rb_raise(eTermInfoError, &quot;terminal could not be found&quot;);
+    else if (err == -1) rb_raise(eTermInfoError, &quot;terminfo database could not be found&quot;);
+    else rb_raise(eTermInfoError, &quot;unexpected setupterm error&quot;);
+  }
+
+  DATA_PTR(self) = cur_term;
+
+  return INT2NUM(err);
+}</pre>
+</body>
+</html>
