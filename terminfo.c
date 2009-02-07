@@ -250,7 +250,7 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
   return output;
 }
 
-#if defined(HAVE_TYPE_RB_IO_T) ||  defined(HAVE_ST_FD)
+#if defined(HAVE_ST_FD)
 # define FILENO(fptr) (fptr->fd)
 #else
 # define FILENO(fptr) fileno(fptr->f)
