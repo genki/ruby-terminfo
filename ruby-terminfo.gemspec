@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email = %q{akr@fsij.org}
   s.extensions = ["extconf.rb"]
   s.extra_rdoc_files = ["README", "ChangeLog"]
-  s.files = ["README", "ChangeLog", "Rakefile", "lib/terminfo.rb", "extconf.h", "terminfo.c", "extconf.rb"]
+  s.files = ["README", "ChangeLog", "Rakefile", "lib/terminfo.rb", "terminfo.c", "extconf.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://ruby-terminfo.rubyforge.org}
   s.rdoc_options = ["--title", "ruby-terminfo documentation", "--charset", "utf-8", "--opname", "index.html", "--line-numbers", "--main", "README", "--inline-source", "--exclude", "^(examples|extras)/"]
