@@ -252,6 +252,8 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
 
 #if defined(HAVE_ST_FD)
 # define FILENO(fptr) (fptr->fd)
+#elif defined(HAVE_RB_IO_T_FD)
+# define FILENO(fptr) fileno(fptr->fd)
 #else
 # define FILENO(fptr) fileno(fptr->f)
 #endif
