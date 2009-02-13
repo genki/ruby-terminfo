@@ -2,16 +2,16 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ruby-terminfo}
-  s.version = "0.1"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tanaka Akira"]
-  s.date = %q{2009-02-08}
+  s.date = %q{2009-02-13}
   s.description = %q{terminfo binding for Ruby}
   s.email = %q{akr@fsij.org}
   s.extensions = ["extconf.rb"]
   s.extra_rdoc_files = ["README", "ChangeLog"]
-  s.files = ["README", "ChangeLog", "Rakefile", "lib/terminfo.rb", "terminfo.c", "extconf.rb"]
+  s.files = ["README", "ChangeLog", "Rakefile", "lib/terminfo.rb", "extconf.h", "terminfo.c", "extconf.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://ruby-terminfo.rubyforge.org}
   s.rdoc_options = ["--title", "ruby-terminfo documentation", "--charset", "utf-8", "--opname", "index.html", "--line-numbers", "--main", "README", "--inline-source", "--exclude", "^(examples|extras)/"]
