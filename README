@@ -12,10 +12,11 @@ http://www.a-k-r.org/ruby-terminfo/
 
 == Feature
 
-* easy to use method, control, for combination of tigetstr/tparm/tputs.
+* easy to use method, control, for combination of tigetstr/tparm/tputs
 * low-level terminfo binding (setupterm, tigetflag, tigetnum, tigetstr, tparm, tputs)
 * TIOCGWINSZ/TIOCSWINSZ ioctl for screen size 
-* ctermid to avoid hardcoding /dev/tty.
+* ctermid to avoid hardcoding /dev/tty
+* wcswidth to measure a string width in number of columns
 
 == Usage
 
