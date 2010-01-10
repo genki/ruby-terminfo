@@ -41,9 +41,7 @@ http://www.a-k-r.org/ruby-terminfo/
 
 * latest release: http://www.a-k-r.org/ruby-terminfo/ruby-terminfo-0.2.tar.gz
 
-* development version in Subversion repository:
-
-  % svn co svn://svn@svn.a-k-r.org/akr/ruby-terminfo/trunk ruby-terminfo
+* development version: http://github.com/akr/ruby-terminfo
 
 == Install
 
