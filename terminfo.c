@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ruby.h"
-#include "rubyio.h"
+#include "ruby/io.h"
 #include "extconf.h"
 
 #include <curses.h>

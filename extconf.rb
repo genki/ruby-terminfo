@@ -37,9 +37,9 @@ require 'mkmf'
 have_library("ncurses", "setupterm") or
 have_library("curses", "setupterm") 
 
-have_type("rb_io_t", ["ruby.h", "rubyio.h"])
-have_struct_member("rb_io_t", "fd", ["ruby.h", "rubyio.h"])
-have_struct_member("OpenFile", "fd", ["ruby.h", "rubyio.h"])
+have_type("rb_io_t", ["ruby.h", "ruby/io.h"])
+have_struct_member("rb_io_t", "fd", ["ruby.h", "ruby/io.h"])
+have_struct_member("OpenFile", "fd", ["ruby.h", "ruby/io.h"])
 
 create_header
 create_makefile('terminfo')
@@ -50,4 +50,3 @@ rdoc:
 	rdoc --op rdoc terminfo.c lib/terminfo.rb
 End
 }
-
