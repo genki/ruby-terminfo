@@ -3,10 +3,10 @@ require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
-require 'rake/contrib/rubyforgepublisher'
-require 'rake/contrib/sshpublisher'
+require 'rubygems/package_task'
+require 'rdoc/task'
+#require 'rake/contrib/rubyforgepublisher'
+#require 'rake/contrib/sshpublisher'
 require 'fileutils'
 include FileUtils
 
@@ -43,7 +43,7 @@ spec = Gem::Specification.new do |s|
 	s.name              = NAME
 	s.version           = VERS
 	s.platform          = Gem::Platform::RUBY
-	s.has_rdoc          = true
+	#s.has_rdoc          = true
 	s.extra_rdoc_files  = ["README", "ChangeLog"]
 	s.rdoc_options     += RDOC_OPTS + ['--exclude', '^(examples|extras)/']
 	s.summary           = DESCRIPTION
@@ -60,6 +60,7 @@ spec = Gem::Specification.new do |s|
 
 	#s.add_dependency('activesupport', '>=1.3.1')
 	#s.required_ruby_version = '>= 1.8.2'
+  s.add_development_dependency('rake', '~> 13.0')
 
 	s.files = %w(README ChangeLog Rakefile) +
 		Dir.glob("{bin,doc,test,lib,templates,generator,extras,website,script}/**/*") + 
@@ -71,10 +72,10 @@ spec = Gem::Specification.new do |s|
 	s.extensions = ["extconf.rb"]
 end
 
-Rake::GemPackageTask.new(spec) do |p|
-	p.need_tar = true
-	p.gem_spec = spec
+Rake::PackageTask.new(spec.name, VERS) do |pkg|
+  pkg.need_tar = true
 end
+
 
 task :install do
 	name = "#{NAME}-#{VERS}.gem"
