@@ -1,3 +1,44 @@
+2009-03-06  Tanaka Akira  <akr@fsij.org>
+
+	* version 0.2 released.
+
+2008-12-30  Tanaka Akira  <akr@fsij.org>
+
+	* terminfo.c (rt_wcswidth): check the return value of wcwidth.
+
+2008-12-30  Tanaka Akira  <akr@fsij.org>
+
+	* terminfo.c: prefer ruby/io.h over rubyio.h.
+	  include wchar.h.
+	  (FILENO): condition refined.
+	  (rt_wcswidth): new method TermInfo.wcswidth.
+
+	* extconf.rb: check ruby/io.h and ruby/encoding.h.
+	  
+2007-05-30  Tanaka Akira  <akr@fsij.org>
+
+	* terminfo.c (TermInfo.ctermid): defined.
+
+	* lib/terminfo.rb, sample/resize: use TermInfo.ctermid instead of
+	  "/dev/tty".
+
+2007-05-29  Tanaka Akira  <akr@fsij.org>
+
+	* sample/resize: new sample program.
+
+2007-04-29  Tanaka Akira  <akr@fsij.org>
+
+	* lib/terminfo.rb (TermInfo.default_object): Use File::NOCTTY for
+	  opening /dev/tty to avoid acquire a controlling terminal.
+
+2007-04-19  Tanaka Akira  <akr@fsij.org>
+
+	* extconf.rb, terminfo.c: try ncurses.h when ncurses is used.
+	  NetBSD has curses.h which is incompatible with ncurses.
+
+	* terminfo.c: define del_curterm empty on FreeBSD and OpenBSD to
+	  avoid warning and core dump.
+
 2007-04-10  Tanaka Akira  <akr@fsij.org>
 
 	* version 0.1 released.

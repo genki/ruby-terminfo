@@ -1,5 +1,7 @@
 = ruby-terminfo - terminfo binding for Ruby
 
+ruby-terminfo is a terminfo binding for Ruby
+
 == Author
 
 Tanaka Akira <akr@fsij.org>
@@ -10,9 +12,11 @@ http://www.a-k-r.org/ruby-terminfo/
 
 == Feature
 
-* easy to use method, control, for combination of tigetstr/tparm/tputs.
+* easy to use method, control, for combination of tigetstr/tparm/tputs
 * low-level terminfo binding (setupterm, tigetflag, tigetnum, tigetstr, tparm, tputs)
 * TIOCGWINSZ/TIOCSWINSZ ioctl for screen size 
+* ctermid to avoid hardcoding /dev/tty
+* wcswidth to measure a string width in number of columns
 
 == Usage
 
@@ -25,7 +29,7 @@ http://www.a-k-r.org/ruby-terminfo/
 === low level methods
 
   require 'terminfo'
-  t = TermInfo.new(ENV["TERM"], STDOUT)
+  t = TermInfo.new(ENV["TERM"], File.open(TermInfo.ctermid, "r+"))
   print t.tputs(t.tparm(t.tigetstr("cuf"), 7), 1)  # cursor forward 7 columns
   p TermInfo.tiocgwinsz(STDOUT)                    # use TIOCGWINSZ
 
@@ -35,11 +39,9 @@ http://www.a-k-r.org/ruby-terminfo/
 
 == Download
 
-* latest release: http://www.a-k-r.org/ruby-terminfo/ruby-terminfo-0.1.tar.gz
+* latest release: http://www.a-k-r.org/ruby-terminfo/ruby-terminfo-0.2.tar.gz
 
-* development version in Subversion repository:
-
-  % svn co svn://svn@svn.a-k-r.org/akr/ruby-terminfo/trunk ruby-terminfo
+* development version: http://github.com/akr/ruby-terminfo
 
 == Install
 
@@ -49,32 +51,32 @@ http://www.a-k-r.org/ruby-terminfo/
 
 == Reference Manual
 
-See rdoc/classes/TermInfo.html or
-http://www.a-k-r.org/ruby-terminfo/rdoc/classes/TermInfo.html
+See rdoc/TermInfo.html or
+http://www.a-k-r.org/ruby-terminfo/rdoc/TermInfo.html
 
 == License
 
-The modified BSD licence
 
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
-  
-   1. Redistributions of source code must retain the above copyright notice, this
-      list of conditions and the following disclaimer.
-   2. Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-   3. The name of the author may not be used to endorse or promote products
-      derived from this software without specific prior written permission.
-  
-  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
-  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-  OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-  OF SUCH DAMAGE.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
+(1) Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+(2) Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+(3) The name of the author may not be used to endorse or promote products
+    derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+OF SUCH DAMAGE.
+
+(The modified BSD licence)

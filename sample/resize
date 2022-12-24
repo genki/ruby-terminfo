@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+# xterm's "resize" command clone.
+#
+# It assumes VT100 compatible terminal.
+
+require 'terminfo'
+require 'termios'
+
+def stty(io)
+  termios = Termios.getattr(io)
+  old = Marshal.load(Marshal.dump(termios))
+  begin
+    yield termios
+  ensure
+    Termios.setattr(io, Termios::TCSADRAIN, old)
+  end
+end
+
+def noecho_raw(io)
+  stty(io) {|termios|
+    termios.iflag &= ~(Termios::ISTRIP|Termios::PARMRK|Termios::INLCR|Termios::ICRNL|Termios::IGNCR|Termios::IXON|Termios::IXOFF)
+    termios.oflag &= ~(Termios::OPOST|Termios::ONLCR|Termios::OCRNL|Termios::ONOCR|Termios::ONLRET)
+    termios.lflag &= ~(Termios::ISIG|Termios::ICANON|Termios::ECHO|Termios::IEXTEN)
+    termios.cc[Termios::VMIN] = 1
+    termios.cc[Termios::VTIME] = 0
+    Termios.setattr(io, Termios::TCSADRAIN, termios)
+    yield
+  }
+end
+
+tty = File.open(TermInfo.ctermid, "r+")
+tty.sync = true
+
+str = nil
+noecho_raw(tty) {
+  tty.print(
+    "\e7" +             # DECSC -- Save Cursor (DEC Private)
+    "\e[999;999H" +     # CUP -- Cursor Position
+    "\e[6n")            # DSR -- Device Status Report
+  str = tty.readpartial(16)
+  tty.print "\e8"       # DECRC -- Restore Cursor (DEC Private)
+}
+
+exit false if /\e\[(\d+);(\d+)R/ !~ str
+
+rows = $1.to_i
+cols = $2.to_i
+
+TermInfo.tiocswinsz(tty, rows, cols)
+
+print <<"End"
+COLUMNS=#{cols};
+LINES=#{rows};
+export COLUMNS LINES;
+End
+

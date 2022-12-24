@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+
+require 'terminfo'
+require 'termios'
+
+def stty(io)
+  termios = Termios.getattr(io)
+  old = Marshal.load(Marshal.dump(termios))
+  begin
+    yield termios
+  ensure
+    Termios.setattr(io, Termios::TCSADRAIN, old)
+  end
+end
+
+
+def noecho_raw(io)
+  stty(io) {|termios|
+    termios.iflag &= ~(Termios::ISTRIP|Termios::PARMRK|Termios::INLCR|Termios::ICRNL|Termios::IGNCR|Termios::IXON|Termios::IXOFF)
+    termios.oflag &= ~(Termios::OPOST|Termios::ONLCR|Termios::OCRNL|Termios::ONOCR|Termios::ONLRET)
+    termios.lflag &= ~(Termios::ISIG|Termios::ICANON|Termios::ECHO|Termios::IEXTEN)
+    termios.cc[Termios::VMIN] = 1
+    termios.cc[Termios::VTIME] = 0
+    Termios.setattr(io, Termios::TCSADRAIN, termios)
+    yield
+  }
+end
+
+tty = STDERR
+ti = TermInfo.new
+
+chars = %w[! " # $ % & ' = - ^ ~ @ * . , ?]
+ch = chars[rand(chars.length)]
+
+def left_to_right(ch)
+  lines, cols = TermInfo.screen_size
+  0.upto(cols-1) {|x|
+    0.upto(lines-1) {|y|
+      TermInfo.control("cup", y, x)
+      TermInfo.write ch
+    }
+  }
+end
+
+def topleft_to_bottomright(ch)
+  lines, cols = TermInfo.screen_size
+  0.upto(lines+cols-1) {|i|
+    0.upto(lines-1) {|y|
+      x = i-y
+      next if x < 0 || cols <= x
+      TermInfo.control("cup", y, x)
+      TermInfo.write ch
+    }
+  }
+end
+
+def spiral(ch)
+  lines, cols = TermInfo.screen_size
+  cx = cols/2.0
+  cy = lines/2.0
+  r = 0.0
+  t = 0.0
+  rmax = Math.sqrt(lines**2 + cols**2)/2+1
+  oldx = oldy = nil
+  loop {
+    r += 0.001
+    t += 0.01
+    break if rmax < r
+    x = cx + Math.sin(t) * r
+    y = cy + Math.cos(t) * r
+    x = x.round.to_i
+    y = y.round.to_i
+    next if oldx == x && oldy == y
+    next if x < 0 || cols <= x
+    next if y < 0 || lines <= y
+    TermInfo.control("cup", y, x)
+    TermInfo.write ch
+    oldx = x
+    oldy = y
+  }
+end
+
+methods = [
+  :left_to_right,
+  :topleft_to_bottomright,
+  :spiral,
+]
+
+noecho_raw(tty) {
+  lines, cols = TermInfo.screen_size
+  meth = methods[rand(methods.length)]
+  send(meth, ch)
+  TermInfo.control("cup", 999, 0)
+}

@@ -1,6 +1,6 @@
 /* terminfo.c - Ruby binding for terminfo library.
 
-Copyright (C) 2007 Tanaka Akira. All rights reserved.
+Copyright (C) 2007, 2008 Tanaka Akira. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
@@ -30,19 +30,53 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ruby.h"
-#include "ruby/io.h"
+#ifdef HAVE_RUBY_IO_H
+# include "ruby/io.h"
+#else
+# include "rubyio.h"
+#endif
 #include "extconf.h"
 
+#if defined(HAVE_NCURSES_H)
+#include <ncurses.h>
+#elif defined(HAVE_CURSES_H)
 #include <curses.h>
+#endif
+
+#ifdef HAVE_TERM_H
 #include <term.h>
+#endif
+
 #include <termios.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
+
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 
 static VALUE cTermInfo;
 static VALUE eTermInfoError;
 
 #ifndef HAVE_TYPE_RB_IO_T
 typedef OpenFile rb_io_t;
+#endif
+
+#if defined(HAVE_RB_IO_T_FD) || defined(HAVE_ST_FD)
+# define FILENO(fptr) (fptr->fd)
+#else
+# define FILENO(fptr) fileno(fptr->f)
+#endif
+
+#if (defined(__FreeBSD__) && __FreeBSD_cc_version <= 602001) || \
+    defined(__OpenBSD__)
+/*
+  * warning on FreeBSD
+    http://www.FreeBSD.org/cgi/query-pr.cgi?pr=108117&cat=
+  * core dump on OpenBSD
+    http://cvs.openbsd.org/cgi-bin/query-pr-wrapper?full=yes&textonly=yes&numbers=5447
+*/
+#define del_curterm(oterm) do {} while(0)
 #endif
 
 static void
@@ -250,14 +284,6 @@ rt_tputs(VALUE self, VALUE v_str, VALUE v_affcnt)
   return output;
 }
 
-#if defined(HAVE_ST_FD)
-# define FILENO(fptr) (fptr->fd)
-#elif defined(HAVE_RB_IO_T_FD)
-# define FILENO(fptr) fileno(fptr->fd)
-#else
-# define FILENO(fptr) fileno(fptr->f)
-#endif
-
 /*
  * TermInfo.tiocgwinsz(io) => [row, col]
  *
@@ -313,6 +339,67 @@ rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
 #endif
 }
 
+/*
+ * TermInfo.ctermid
+ *
+ * TermInfo.ctermid returns a pathname for the current controling terminal,
+ * such as "/dev/tty".
+ */
+static VALUE
+rt_ctermid(VALUE self)
+{
+#ifdef HAVE_CTERMID
+  char buf[L_ctermid];
+  return rb_str_new2(ctermid(buf));
+#else
+  return rb_str_new2("/dev/tty");
+#endif
+}
+
+/*
+ * TermInfo.wcswidth(str)
+ *
+ * TermInfo.wcswidth returns a the number of columns of str,
+ * according to current locale.
+ */
+static VALUE
+rt_wcswidth(VALUE self, VALUE str)
+{
+  char *s;
+  size_t l, r;
+  mbstate_t mbs;
+  wchar_t wc;
+  long cols;
+  int width;
+
+#ifdef HAVE_RUBY_ENCODING_H
+  /* The encoding of str is assumed to be the locale encoding on Ruby 1.8. */
+  str = rb_str_encode(str, rb_enc_from_encoding(rb_locale_encoding()), 0, Qnil);
+#endif
+
+  memset(&mbs,0,sizeof(mbstate_t));
+
+  s = StringValueCStr(str);
+  l = RSTRING_LEN(str);
+
+  cols = 0;
+  while (0 < l) {
+    r = mbrtowc(&wc, s, l, &mbs);
+    if (r == 0)
+      rb_raise(rb_eArgError, "NUL found");
+
+    width = wcwidth(wc);
+    if (width == -1)
+      rb_raise(rb_eArgError, "non-printable charactor found");
+    cols += width;
+
+    l -= r;
+    s += r;
+  }
+
+  return LONG2NUM(cols);
+}
+
 void
 Init_terminfo()
 {
@@ -333,4 +420,8 @@ Init_terminfo()
 
   rb_define_module_function(cTermInfo, "tiocgwinsz", rt_tiocgwinsz, 1);
   rb_define_module_function(cTermInfo, "tiocswinsz", rt_tiocswinsz, 3);
+
+  rb_define_module_function(cTermInfo, "ctermid", rt_ctermid, 0);
+
+  rb_define_module_function(cTermInfo, "wcswidth", rt_wcswidth, 1);
 }

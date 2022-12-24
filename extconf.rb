@@ -30,23 +30,51 @@
 
 require 'mkmf'
 
-# GNU/Linux     -lncurses
-# FreeBSD       -lncurses
-# HP-UX         -lcurses
+# Debian GNU/Linux 4.0 (etch)   curses.h, term.h, -lncurses     (ncurses.h is linked to curses.h)
+# FreeBSD 6.2                   curses.h, term.h, -lncurses     (ncurses.h is linked to curses.h)
+# OpenBSD 4.0                   curses.h, term.h, -lncurses     (curses.h includes ncurses.h by default)
+# HP-UX 11i v3                  term.h, -lcurses
+# SunOS 5.10                    curses.h, term.h, -lcurses
 
-have_library("ncurses", "setupterm") or
-have_library("curses", "setupterm") 
+# NetBSD 3.1 with ncurses       ncurses.h, -lncurses    (curses.h is incompatible for ncurses)
 
-have_type("rb_io_t", ["ruby.h", "ruby/io.h"])
-have_struct_member("rb_io_t", "fd", ["ruby.h", "ruby/io.h"])
-have_struct_member("OpenFile", "fd", ["ruby.h", "ruby/io.h"])
+have_header("curses.h")
+have_header("term.h")
 
-create_header
-create_makefile('terminfo')
+have_func("ctermid", "stdio.h")
 
-open("Makefile", "a") {|mfile|
-  mfile.puts <<'End'
+has_setupterm = true
+if have_library("ncurses", "setupterm")
+  have_header("ncurses.h")
+elsif have_library("curses", "setupterm") 
+else
+  has_setupterm = false
+end
+
+have_header("wchar.h")
+
+rubyio_h = nil
+rubyio_h = "ruby/io.h" if have_header("ruby/io.h")
+rubyio_h = "rubyio.h" unless rubyio_h
+
+if have_type("rb_io_t", ["ruby.h", rubyio_h])
+  have_struct_member("rb_io_t", "fd", ["ruby.h", rubyio_h])
+else
+  have_struct_member("OpenFile", "fd", ["ruby.h", rubyio_h])
+end
+
+have_header("ruby/encoding.h")
+
+if has_setupterm
+  create_header
+  create_makefile('terminfo')
+
+  open("Makefile", "a") {|mfile|
+    mfile.puts <<'End'
 rdoc:
 	rdoc --op rdoc terminfo.c lib/terminfo.rb
 End
-}
+  }
+else
+  puts "terminfo library not found"
+end
