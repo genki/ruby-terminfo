@@ -1,60 +1,75 @@
-= ruby-terminfo - terminfo binding for Ruby
+# ruby-terminfo - terminfo bindings for Ruby
 
-ruby-terminfo is a terminfo binding for Ruby
+ruby-terminfo provides terminfo bindings for Ruby
 
-== Author
+[![Gem Version](https://badge.fury.io/rb/ruby-terminfo.svg)](https://badge.fury.io/rb/ruby-terminfo)
+
+## Author
 
 Tanaka Akira <akr@fsij.org>
 
-== Home Page
+## Home Page
 
 http://www.a-k-r.org/ruby-terminfo/
 
-== Feature
+## Features
 
-* easy to use method, control, for combination of tigetstr/tparm/tputs
-* low-level terminfo binding (setupterm, tigetflag, tigetnum, tigetstr, tparm, tputs)
+* Easy to use methods
+  * `control` (combination of `tigetstr`/`tparm`/`tputs`)
+* Low-level terminfo bindings
+  * `setupterm`
+  * `tigetflag`
+  * `tigetnum`
+  * `tigetstr`
+  * `tparm`
+  * `tputs`
 * TIOCGWINSZ/TIOCSWINSZ ioctl for screen size 
-* ctermid to avoid hardcoding /dev/tty
-* wcswidth to measure a string width in number of columns
+* `ctermid` to avoid hardcoding /dev/tty
+* `wcswidth` to measure a string width in number of columns
 
-== Usage
+## Usage
 
-=== easy to use methods
+### Easy to use methods
+```ruby
+require 'terminfo'
 
-  require 'terminfo'
-  TermInfo.control("cuf", 7)    # cursor forward 7 columns
-  p TermInfo.screen_size        # use TIOCGWINSZ, LINES/COLUMNS env. or terminfo lines#/cols#
+TermInfo.control("cuf", 7)    # cursor forward 7 columns
+p TermInfo.screen_size        # use TIOCGWINSZ, LINES/COLUMNS env. or terminfo lines#/cols#
+```
 
-=== low level methods
+### Low level methods
+```ruby
+require 'terminfo'
 
-  require 'terminfo'
-  t = TermInfo.new(ENV["TERM"], File.open(TermInfo.ctermid, "r+"))
-  print t.tputs(t.tparm(t.tigetstr("cuf"), 7), 1)  # cursor forward 7 columns
-  p TermInfo.tiocgwinsz(STDOUT)                    # use TIOCGWINSZ
+t = TermInfo.new(ENV["TERM"], File.open(TermInfo.ctermid, "r+"))
+print t.tputs(t.tparm(t.tigetstr("cuf"), 7), 1)  # cursor forward 7 columns
+p TermInfo.tiocgwinsz(STDOUT)                    # use TIOCGWINSZ
+```
 
-== Requirements
+## Requirements
 
-* ruby : http://www.ruby-lang.org/
+* Ruby : http://www.ruby-lang.org/
 
-== Download
+## Download
 
-* latest release: http://www.a-k-r.org/ruby-terminfo/ruby-terminfo-0.2.tar.gz
+* Latest release: http://www.a-k-r.org/ruby-terminfo/ruby-terminfo-0.2.tar.gz
 
-* development version: http://github.com/akr/ruby-terminfo
+* Development version: http://github.com/akr/ruby-terminfo
 
-== Install
+## Install
 
-  % ruby extconf.rb
-  % make
-  % make install
+```shell
+ruby extconf.rb
+make
+make install
+```
 
-== Reference Manual
+## Reference Manual
 
 See rdoc/TermInfo.html or
 http://www.a-k-r.org/ruby-terminfo/rdoc/TermInfo.html
 
-== License
+## License
 
 
 Redistribution and use in source and binary forms, with or without
