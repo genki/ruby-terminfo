@@ -106,12 +106,10 @@ check_rt(VALUE self)
 static void
 setup(VALUE self)
 {
-  TERMINAL *old;
   TERMINAL *term = check_rt(self);
   if (term == NULL) { rb_raise(eTermInfoError, "terminfo object not initialized"); }
   if (cur_term == term)
     return;
-  old = set_curterm(term);
 }
 
 /*
@@ -294,13 +292,10 @@ static VALUE
 rt_tiocgwinsz(VALUE self, VALUE io)
 {
 #ifdef TIOCGWINSZ
-  rb_io_t *fptr;
   struct winsize sz;
   int ret;
 
-  GetOpenFile(io, fptr);
-
-  ret = ioctl(FILENO(fptr), TIOCGWINSZ, &sz);
+  ret = ioctl(rb_io_descriptor(io), TIOCGWINSZ, &sz);
   if (ret == -1) rb_raise(rb_eIOError, "TIOCGWINSZ failed");
 
   return rb_ary_new3(2, INT2NUM(sz.ws_row), INT2NUM(sz.ws_col));
@@ -321,16 +316,13 @@ static VALUE
 rt_tiocswinsz(VALUE self, VALUE io, VALUE row, VALUE col)
 {
 #ifdef TIOCSWINSZ
-  rb_io_t *fptr;
   struct winsize sz;
   int ret;
-
-  GetOpenFile(io, fptr);
 
   sz.ws_row = NUM2INT(row);
   sz.ws_col = NUM2INT(col);
 
-  ret = ioctl(FILENO(fptr), TIOCSWINSZ, &sz);
+  ret = ioctl(rb_io_descriptor(io), TIOCSWINSZ, &sz);
   if (ret == -1) rb_raise(rb_eIOError, "TIOCSWINSZ failed");
 
   return Qnil;
@@ -401,12 +393,12 @@ rt_wcswidth(VALUE self, VALUE str)
 }
 
 void
-Init_terminfo()
+Init_terminfo(void)
 {
   putfunc_output = Qnil;
   rb_global_variable(&putfunc_output);
 
-  cTermInfo = rb_define_class("TermInfo", rb_cData);
+  cTermInfo = rb_define_class("TermInfo", rb_cObject);
   eTermInfoError = rb_define_class_under(cTermInfo, "TermInfoError", rb_eRuntimeError);
 
   rb_define_alloc_func(cTermInfo, rt_alloc);
